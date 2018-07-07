@@ -25,16 +25,30 @@ app.get("/company/:name", (req, res) => {
 
     let sql = 'CALL GetCompanyData(?, ?, ?)'
 
-    connection.query(sql, [req.params.name, '2012-03-31', '2017-03-31'], (err, rows, fields) => {
+    var startDate = '2012-03-31'
+    var endDate = '2012-06-30'
+    connection.query(sql, [req.params.name, startDate, endDate], (err, rows, fields) => {
         if(err){
             console.log("Failed to query for company: " + err)
             res.end()
             return
         }
 
-        console.log("Query succeeded for company: " + req.params.name + " query returned " + rows.length + " records")
+        
 
-        res.json(rows)
+        //res.json(rows)
+        
+        var string=JSON.stringify(rows);
+        var json =  JSON.parse(string);
+
+        console.log("Query succeeded for company: " + req.params.name + " query returned " + json[0].length + " records for the period " + startDate + " - " + endDate )
+
+        for (let i = 0; i < json[0].length; i++) {
+            console.log(json[0][i].tag)
+        }
+
+        //console.log('>> company.plabel: ', data )
+        res.end()
     })
 
     //res.send("Hello from 3003")
