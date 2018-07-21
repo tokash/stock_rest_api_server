@@ -36,19 +36,19 @@ app.get("/company/:name", (req, res) => {
 
         
 
-        //res.json(rows)
+        res.json(rows[0])
         
         var string=JSON.stringify(rows);
         var json =  JSON.parse(string);
 
         console.log("Query succeeded for company: " + req.params.name + " query returned " + json[0].length + " records for the period " + startDate + " - " + endDate )
 
-        for (let i = 0; i < json[0].length; i++) {
-            console.log(json[0][i].tag)
-        }
+        // for (let i = 0; i < json[0].length; i++) {
+        //     console.log(json[0][i].tag)
+        // }
 
         //console.log('>> company.plabel: ', data )
-        res.end()
+        //res.end(json)
     })
 
     //res.send("Hello from 3003")
