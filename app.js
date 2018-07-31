@@ -6,7 +6,6 @@ const app = express
 app.use(cors({credentials: true, origin: true}))
 
 const mysql = require('mysql')
-//app.use(mysql)
 
 class Company {
     constructor(company, instance, adsh, tag, version, fiscal_period, date, quarter, uom, coreg, value, footnote, cik, sic, plabel) {
@@ -33,6 +32,32 @@ app.get("/", (req, res) => {
     res.send("Hello from 3003")
 })
 
+app.get("/companies/:num_companies", (req, res) => {
+    console.log("Fetching names for " + req.params.num_companies + " companies")
+
+    const connection = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'yt043112192',
+        database: 'sec_dataset2'
+    })
+
+    let sql = 'CALL GetAllCompanies(?)'
+    connection.query(sql, [req.params.num_companies], (err, rows, fields) => {
+        if(err){
+            console.log("Failed to query : " + err)
+            res.end()
+            return
+        }
+
+        res.json(rows[0])
+        
+        var string=JSON.stringify(rows)
+        var json =  JSON.parse(string)
+
+        console.log("Query succeeded for " + req.params.num_companies + " companies +  query returned " + json[0].length + " records")
+    })})
+
 app.get("/company/:name", (req, res) => {
     console.log("Fetching company with name: " + req.params.name)
 
@@ -45,13 +70,20 @@ app.get("/company/:name", (req, res) => {
 
     let sql = 'CALL GetCompanyFullData(?, ?, ?, ?)'
 
+<<<<<<< HEAD
     connection.query(sql, [req.params.name, '2012-03-31', '2012-06-30', '0'], (err, rows, fields) => {
+=======
+    var startDate = '2012-03-31'
+    var endDate = '2012-06-30'
+    connection.query(sql, [req.params.name, startDate, endDate], (err, rows, fields) => {
+>>>>>>> 7e2d206d12d4a5900761de77878a1aa58b3ef805
         if(err){
             console.log("Failed to query for company: " + err)
             res.end()
             return
         }
 
+<<<<<<< HEAD
         console.log("Query succeeded for company: " + req.params.name + " query returned " + rows.length + " records")
         
         /*if (err) throw err;
@@ -82,6 +114,24 @@ app.get("/company/:name", (req, res) => {
         
 
         //res.json(rows)
+=======
+        
+
+        res.json(rows[0])
+
+        
+        var string=JSON.stringify(rows);
+        var json =  JSON.parse(string);
+
+        console.log("Query succeeded for company: " + req.params.name + " query returned " + json[0].length + " records for the period " + startDate + " - " + endDate )
+
+        // for (let i = 0; i < json[0].length; i++) {
+        //     console.log(json[0][i].tag)
+        // }
+
+        //console.log('>> company.plabel: ', data )
+        //res.end(json)
+>>>>>>> 7e2d206d12d4a5900761de77878a1aa58b3ef805
     })
 
     //res.send("Hello from 3003")
