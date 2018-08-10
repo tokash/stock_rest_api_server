@@ -70,52 +70,16 @@ app.get("/company/:name", (req, res) => {
 
     let sql = 'CALL GetCompanyFullData(?, ?, ?, ?)'
 
-<<<<<<< HEAD
-    connection.query(sql, [req.params.name, '2012-03-31', '2012-06-30', '0'], (err, rows, fields) => {
-=======
     var startDate = '2012-03-31'
     var endDate = '2012-06-30'
-    connection.query(sql, [req.params.name, startDate, endDate], (err, rows, fields) => {
->>>>>>> 7e2d206d12d4a5900761de77878a1aa58b3ef805
+    connection.query(sql, [req.params.name, startDate, endDate, '1'], (err, rows, fields) => {
         if(err){
             console.log("Failed to query for company: " + err)
             res.end()
             return
         }
 
-<<<<<<< HEAD
-        console.log("Query succeeded for company: " + req.params.name + " query returned " + rows.length + " records")
-        
-        /*if (err) throw err;
-        Object.keys(rows).forEach(function(key) {
-            var row = rows[key];
-            //console.log(row.RowDataPacket.company)
-          });*/
-
-          
-        var records = []
-        records = JSON.parse(JSON.stringify(rows))
-        console.log(records)
-        //console.log(records[0].RowDataPacket.plabel)
-        //console.log(String(data[0].plabel));
-        /*for (let i = 0; i < records.length; i++) {
-            //var currCompany = new Company()
-            //currCompany.company = data[i].company
-            //currCompany.plabel = String(data[i].plabel)
-            console.log(records[i].plabel)
-            
-            //console.log(v[i])
-            //records.push(currCompany)
-
-            //res.append(currCompany.plabel)
-        }*/
-
-        res.end()
-        
-
-        //res.json(rows)
-=======
-        
+        connection.end()
 
         res.json(rows[0])
 
@@ -131,7 +95,6 @@ app.get("/company/:name", (req, res) => {
 
         //console.log('>> company.plabel: ', data )
         //res.end(json)
->>>>>>> 7e2d206d12d4a5900761de77878a1aa58b3ef805
     })
 
     //res.send("Hello from 3003")
