@@ -50,6 +50,8 @@ app.get("/companies/:num_companies", (req, res) => {
             return
         }
 
+        connection.end()
+
         res.json(rows[0])
         
         var string=JSON.stringify(rows)
