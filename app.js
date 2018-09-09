@@ -27,6 +27,15 @@ class Company {
     }
 }
 
+class Record {
+    constructor(tag, value, date, quarter) {
+      this.tag = tag;
+      this.value = value;
+      this.data = data;
+      this.quarter = quarter;
+    }
+}
+
 app.get("/", (req, res) => {
     console.log("The server on port 3003 has responded.")
     res.send("Hello from 3003")
@@ -60,8 +69,11 @@ app.get("/companies/:num_companies", (req, res) => {
         console.log("Query succeeded for " + req.params.num_companies + " companies +  query returned " + json[0].length + " records")
     })})
 
-app.get("/company/:name", (req, res) => {
-    console.log("Fetching company with name: " + req.params.name)
+app.get("/company", (req, res) => {
+    var company = req.query.Company
+
+    console.log("/company/")
+    console.log("Fetching data for company: " + company)
 
     const connection = mysql.createConnection({
         host: 'localhost',
@@ -72,9 +84,13 @@ app.get("/company/:name", (req, res) => {
 
     let sql = 'CALL GetCompanyFullData(?, ?, ?, ?)'
 
-    var startDate = '2012-03-31'
-    var endDate = '2012-06-30'
-    connection.query(sql, [req.params.name, startDate, endDate, '1'], (err, rows, fields) => {
+    var startDate = new Date();
+    startDate.setDate(startDate.getDate() - (365 * 1));
+    var endDate = new Date();
+    
+    //console.log('start date:', startDate)
+    //console.log('end date:', endDate)
+    connection.query(sql, [company, startDate, endDate, '1'], (err, rows, fields) => {
         if(err){
             console.log("Failed to query for company: " + err)
             res.end()
@@ -84,15 +100,25 @@ app.get("/company/:name", (req, res) => {
         connection.end()
 
         var rows = JSON.stringify(rows[0])
-        var jsonRows = JSON.parse(rows)
+        //console.log(rows)        
 
-        console.log(lodash.groupBy(jsonRows, 'tag'))
+        var jsonRows = JSON.parse(rows)
+        console.log(jsonRows)
+
+        //var tagGroupedBy = lodash.groupBy(jsonRows, 'tag');
+        //console.log(jsonRows)
+
+        //console.log(lodash.groupBy(jsonRows, 'tag'))
+
+        //var netIncomeLoss = lodash.find(jsonRows, function(o){ return o.tag == "NetIncomeLoss" })
+        //console.log(netIncomeLoss);
+        //console.log(netIncomeLoss.value);
 
         res.json(rows[0])
 
         
         var string=JSON.stringify(rows);
-        var json =  JSON.parse(string);
+        var json = JSON.parse(string);
 
         //console.log("Query succeeded for company: " + req.params.name + " query returned " + json[0].length + " records for the period " + startDate + " - " + endDate )
 
