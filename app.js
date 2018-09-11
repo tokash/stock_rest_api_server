@@ -63,16 +63,14 @@ app.get("/companies/:num_companies", (req, res) => {
 
         res.json(rows[0])
         
-        var string=JSON.stringify(rows)
+        var string = JSON.stringify(rows)
         var json =  JSON.parse(string)
 
-        console.log("Query succeeded for " + req.params.num_companies + " companies +  query returned " + json[0].length + " records")
+        console.log("Query succeeded for " + req.params.num_companies + " companies, query returned " + json[0].length + " records")
     })})
 
 app.get("/company", (req, res) => {
     var company = req.query.Company
-
-    console.log("/company/")
     console.log("Fetching data for company: " + company)
 
     const connection = mysql.createConnection({
@@ -88,49 +86,22 @@ app.get("/company", (req, res) => {
     startDate.setDate(startDate.getDate() - (365 * 1));
     var endDate = new Date();
     
-    //console.log('start date:', startDate)
-    //console.log('end date:', endDate)
     connection.query(sql, [company, startDate, endDate, '1'], (err, rows, fields) => {
         if(err){
             console.log("Failed to query for company: " + err)
             res.end()
             return
         }
-
         connection.end()
 
-        var rows = JSON.stringify(rows[0])
-        //console.log(rows)        
-
-        var jsonRows = JSON.parse(rows)
-        console.log(jsonRows)
-
-        //var tagGroupedBy = lodash.groupBy(jsonRows, 'tag');
-        //console.log(jsonRows)
-
-        //console.log(lodash.groupBy(jsonRows, 'tag'))
-
-        //var netIncomeLoss = lodash.find(jsonRows, function(o){ return o.tag == "NetIncomeLoss" })
-        //console.log(netIncomeLoss);
-        //console.log(netIncomeLoss.value);
-
-        res.json(rows[0])
-
+        console.log("Query succeeded for " + company + " between " + startDate + " and " + endDate + " query returned " + rows[0].length + " records")
         
-        var string=JSON.stringify(rows);
-        var json = JSON.parse(string);
+        var test = lodash.groupBy(rows[0], 'ddate')
+        var result = Object.keys(test).map(key => ({ date: key, items: test[key] }));
 
-        //console.log("Query succeeded for company: " + req.params.name + " query returned " + json[0].length + " records for the period " + startDate + " - " + endDate )
-
-        // for (let i = 0; i < json[0].length; i++) {
-        //     console.log(json[0][i].tag)
-        // }
-
-        //console.log('>> company.plabel: ', data )
-        //res.end(json)
+        res.json(result)
+        //res.json(rows[0])
     })
-
-    //res.send("Hello from 3003")
 })
 
 app.listen(3003, () => {
