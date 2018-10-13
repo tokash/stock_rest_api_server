@@ -83,7 +83,7 @@ app.get("/company", (req, res) => {
     let sql = 'CALL GetCompanyFullData(?, ?, ?, ?)'
 
     var startDate = new Date();
-    startDate.setDate(startDate.getDate() - (365 * 1));
+    startDate.setDate(startDate.getDate() - (365 * 3));
     var endDate = new Date();
     
     connection.query(sql, [company, startDate, endDate, '1'], (err, rows, fields) => {
